@@ -1,16 +1,25 @@
-const http = require('http');
+const express = require('express');
+const app  = express();
 
-const server = http.createServer((req, res) => {
-    if(req.url === '/'){
-        res.write('Hello World');
-        res.end();
-    }
-    if(req.url === '/api/courses'){
-        res.write(JSON.stringify([1, 2, 3]));
-        res.end();
-    }
+const courses = [
+    {id: 1, name: 'course1'},
+    {id: 2, name: 'course2'},
+    {id: 3, name: 'course3'},
+]
+
+
+app.get('/', (req, res) => {
+    res.send('Hello World!!!');
 });
 
-server.listen(3000);
+app.get('/api/courses', (req, res) => {
+    res.send([1, 2, 3]);
+});
 
-console.log('Listening on port 3000');
+app.get('/api/courses/:id', (req, res) => {
+    const course = courses.find(c => c.id === parseInt(req.params.id));
+    if(!course) res.status(404).send('The course with the given id was not found!');
+    res.send(course);
+});
+const port = process.env.PORT || 3000
+app.listen(port, () => console.log(`Listening on port ${port} `));
