@@ -11,7 +11,9 @@ const app  = express();
 app.use(express.json());
 app.use(express.urlencoded({extend: true}));
 app.use(express.static('public'));
-app.use(helmet());
+
+app.set('view engine', 'pug');
+app.set('views', './views');
 
 if(app.get('env') === 'development'){
     app.use(morgan('tiny'));
@@ -22,7 +24,7 @@ dbDebugger('connected to the database...');
 
 startupDebugger("Application Name:" + config.get('name'));
 startupDebugger("Mail Server:" + config.get('mail.host'));
-startupDebugger("Mail Password:" + config.get('mail.password'));
+//startupDebugger("Mail Password:" + config.get('mail.password'));
 
 app.use(log);
 
@@ -36,7 +38,7 @@ const courses = [
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!!!');
+    res.render('index', { title: 'My Express App', message: 'Hello'});
 });
 
 app.get('/api/courses', (req, res) => {
